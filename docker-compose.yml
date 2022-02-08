@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+
+  meditation-app:
+    image: 271217/felix-node-npm:1.3
+    container_name: meditation-app
+    restart: unless-stopped
+    volumes:
+      - .:/opt
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - -c
+      - |
+        expo start -c --port 19001
+    environment:
+      - REACT_NATIVE_PACKAGER_HOSTNAME="meditation-app.fxdev.pt"
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+    ports:
+      - 19000:19000
+      - 19001:19001
+      - 19002:19002
+      - 19006:19006
+    
+  meditation-app-build:
+    image: 271217/felix-node-npm:1.3
+    container_name: meditation-app-build
+    restart: unless-stopped
+    volumes:
+      - .:/opt
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - -c
+      - |
+        expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD 
+        yes | expo build:android -t apk --no-wait
